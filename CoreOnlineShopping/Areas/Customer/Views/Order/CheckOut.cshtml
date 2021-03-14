@@ -1,0 +1,122 @@
+﻿
+@model CoreOnlineShopping.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+@using CoreOnlineShopping.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+
+    List<Products> products = HttpContextAccessor.HttpContext.Session.Get<List<Products>>("products");
+    if (products == null)
+    {
+        products = new List<Products>();
+    }
+
+}
+
+<br />
+<h2 class="text-info">Order Details</h2>
+<br />
+
+<form asp-action="CheckOut" asp-controller="Order" asp-area="Customer" method="post">
+    <div class="p-4 rounded border">
+        <div asp-validation-summary="ModelOnly" class="text-danger">
+
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Name"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Phone"></label>
+                        </div>
+
+                        <div class="col-8">
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Address"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Email"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="OrderDate"></label>
+                        </div>
+                        <div class="col-8">
+                            <input id="OrderDate" type="datetime" asp-for="OrderDate" value="@DateTime.Now.ToString("d")" class="form-control" readonly />
+                            <span asp-validation-for="OrderDate" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-6">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in products)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.Image" height="100" width="100" />
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Price</td>
+                        </tr>
+                    }
+                </table>
+                <div class="text-right">
+                    <h1>Total Price: @products.Sum(x => x.Price).ToString("c")</h1>
+                </div>
+                <div class="form-group text-right">
+                    <input type="submit" value="Place Order" class="btn btn-success" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@*save a abstıkça validation hatası veren texte curser koyma*@
+@section Scripts{
+    @{await Html.RenderPartialAsync(partialViewName: "_ValidationScriptsPartial.cshtml");}
+}

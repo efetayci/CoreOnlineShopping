@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CoreOnlineShopping.Models.ProductTypes>
+@{
+    ViewData["Title"] = "Index";
+
+}
+@using CoreOnlineShopping.Models
+
+<br />
+<br />
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Product Type List</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Create" class="btn btn-info">&nbsp; New Product Type</a>
+    </div>
+</div>
+
+<div>
+    <table class="table table-bordered">
+        <tr class="table table-info">
+            <th>
+                @Html.DisplayNameFor(x => x.ProductType)
+            </th>
+            <th>Operations</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProductType</td>
+                <td>
+                    @{ 
+                        var button = new ButtonPartial
+                        {
+                            Id = item.Id,
+                            Name = "ProductTypes"
+                        };
+                    }
+                    <partial name="_ButtonPartial" model="button" />
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+@section Scripts{
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var save = '@TempData["Save"]'
+            var deleted = '@TempData["Delete"]'
+            if (save != ""  && save!= null ) {
+                alertify.success(save);
+            }
+            if (deleted != "" && deleted != null) {
+                alertify.error(deleted);
+            }
+        })
+    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+}
+<script>
+    function Get2(id) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: "Get",
+                        url: "./ProductTypes/Delete",
+                        data: { id: id },
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function () {
+                            window.location.reload();
+                        },
+                        error: function (error) {
+                            alert(error.statusText);
+                        }
+
+                    });
+                }
+            });
+    };
+</script>
+

@@ -1,0 +1,150 @@
+﻿@model IEnumerable<CoreOnlineShopping.Models.Products>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<br />
+<br />
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Product List</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Create" class="btn btn-info">&nbsp; Add New Product</a>
+    </div>
+</div>
+<br />
+<form method="post">
+    <div class="row">
+        <div class="col-3">
+            <input type="number" class="form-control" name="lowAmount" />
+        </div>
+        <div class="col-3">
+            <input type="number" class="form-control" name="largeAmount" />
+        </div>
+        <div class="col-3">
+            <input type="submit" class="btn btn-info" value="Submit" />
+        </div>
+    </div>
+</form>
+<br />
+<div>
+
+    <table class="table table-bordered" id="myTable">
+        <thead>
+            <tr class="table table-info">
+                <th>
+                    @Html.DisplayNameFor(x => x.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.ProductColor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.IsAvilable)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.ProductTypes.ProductType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(x => x.SpecialTag.SpeacialTagNAme)
+                </th>
+                <th>Operations</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.ProductColor</td>
+                    <td>@item.IsAvilable</td>
+                    <td>@item.ProductTypes.ProductType</td>
+                    <td>@item.SpecialTag.SpeacialTagNAme</td>
+                    <td>
+                        @{
+                            var button = new ButtonPartial
+                            {
+                                Id = item.Id,
+                                Name = "Product"
+                            };
+                            <partial name="_ButtonPartial" model="button" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            var save = '@TempData["Save"]'
+            var deleted = '@TempData["Delete"]'
+            if (save != ""  && save!= null ) {
+                alertify.success(save);
+            }
+            if (deleted != "" && deleted != null) {
+                alertify.error(deleted);
+            }
+        })
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
+<script type="text/javascript">
+
+    $('#myTable').dataTable({});
+    console.log;
+</script>
+
+<script>
+    function Get2(id) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: "Get",
+                        url: "/Admin/Product/Delete",
+                        data: { id: id },
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function () {
+                            window.location.reload();
+                        },
+                        error: function (error) {
+                            alert(error.statusText);
+                        }
+
+                    });
+                }
+            });
+    };
+</script>
+
+
+
+
+
